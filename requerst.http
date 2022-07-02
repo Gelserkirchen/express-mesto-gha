@@ -5,7 +5,8 @@ const cardRouter = require('./routes/cards');
 GET http://localhost:3000/users 
 
 ###
-GET http://localhost:3000/users/62bc437c3db57048e044be81
+# GET http://localhost:3000/users/62bc437c3db57048e044be81
+# GET http://localhost:3000/users/text
 
 ###
 POST http://localhost:3000/users 

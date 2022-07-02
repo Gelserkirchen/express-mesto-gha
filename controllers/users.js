@@ -11,7 +11,13 @@ exports.getUsersById = (req, res) => {
     if (!userData) { res.status(400).send({ message: 'Пользователь по указанному _id не найден.' }) } else {
       res.status(200).send(userData);
     }
-  }).catch(err => res.status(500).send({ message: err.message }));
+  }).catch(err => { 
+    if (err.name === 'CastError') {
+      res.status(400).send({ message: 'Пользователь по указанному _id не найден.' })  
+    } else {
+      res.status(500).send({ message: err.message })
+    }
+  });
 };
 
 exports.createUser = (req, res) => {
