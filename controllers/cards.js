@@ -36,6 +36,7 @@ exports.deleteCardById = (req, res) => {
   })
 };
 
+
 exports.likeCard = (req, res) => {
   const { cardId } = req.params;
 
@@ -52,7 +53,7 @@ exports.likeCard = (req, res) => {
   })
 }
 
-exports.dislikeCard = (req, res) => { 
+exports.dislikeCard = (req, res) => {
   const { cardId } = req.params;
 
   card.findByIdAndUpdate(

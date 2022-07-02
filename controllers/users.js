@@ -8,7 +8,7 @@ exports.getUsers = (req, res) => {
 
 exports.getUsersById = (req, res) => {
   user.findOne({ _id: req.params.userId }).then((userData) => {
-    if (!userData) { res.status(404).send({ 'message': 'Пользователь по указанному _id не найден.' }) } else {
+    if (!userData) { res.status(404).send({ message: 'Пользователь по указанному _id не найден.' }) } else {
       res.status(200).send(userData);
     }
   }).catch(err => res.status(500).send({ message: err.message }));
