@@ -25,7 +25,7 @@ POST http://localhost:3000/cards
 Content-Type: application/json
 
 {
-    "name": "123ss",
+    "name": "asdf",
     "link": "https://sdf",
     "owner": "62bc16168bba5560cb65264f"
 }
@@ -44,5 +44,17 @@ PATCH http://localhost:3000/users/me/avatar
 Content-Type: application/json
 
 {
-    "avatar": "https://asdfs.ru"
+    "avatar": "https://asdfss.ru"
 }
+
+###
+DELETE http://localhost:3000/cards/62bfdb96ac44d9f1125edd30
+
+###
+PUT http://localhost:3000/cards/62bfdc2d8cc6ee91053982e8/likes
+
+###
+PUT http://localhost:3000/cards/62bfe8/likes
+
+###
+DELETE http://localhost:3000/cards/62bfdc2d8cc6ee91053982e8/likes

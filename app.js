@@ -11,7 +11,6 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   req.user = {
-    // _id: '62be69cfc11a786457b325a7',
     _id: '62be69cfc11a786457b325a9',
   };
 
@@ -21,7 +20,7 @@ app.use((req, res, next) => {
 app.use('/', userRouter);
 app.use('/', cardsRouter);
 
-app.use((err, req, res) => {
+app.use((err, res, req) => {
   res.status(404).send('Карточка или пользователь на нейдены!');
 })
 
