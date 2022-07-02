@@ -8,7 +8,7 @@ exports.getUsers = (req, res) => {
 
 exports.getUsersById = (req, res) => {
   user.findOne({ _id: req.params.userId }).then((userData) => {
-    if (!userData) { res.status(404).send({ message: 'Пользователь по указанному _id не найден.' }) } else {
+    if (!userData) { res.status(400).send({ message: 'Пользователь по указанному _id не найден.' }) } else {
       res.status(200).send(userData);
     }
   }).catch(err => res.status(500).send({ message: err.message }));
@@ -37,9 +37,9 @@ exports.updateProfile = (req, res) => {
   user.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then(userData => {
       if (!userData) {
-        res.status(400).send({ message: 'Пользователь с указанным _id не найден.' });
+        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
       } else {
-        res.send({ data: userData })
+        res.status(200).send({ data: userData });
       }
     })
     .catch(err => {
