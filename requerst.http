@@ -1,13 +1,48 @@
 const userRouter = require('./routes/users');
+const cardRouter = require('./routes/cards');
 
+###
 GET http://localhost:3000/users 
+
+###
+GET http://localhost:3000/users/62bc437c3db57048e044be80
 
 ###
 POST http://localhost:3000/users 
 Content-Type: application/json
 
 {
-    "name": "Andrei",
+    "name": "asdf1",
     "about": "positive dreamer",
-    "avatar": "https://sdf"    
+    "avatar": "https://sdf"
+}
+
+###
+GET http://localhost:3000/cards 
+
+###
+POST http://localhost:3000/cards
+Content-Type: application/json
+
+{
+    "name": "123ss",
+    "link": "https://sdf",
+    "owner": "62bc16168bba5560cb65264f"
+}
+
+###
+PATCH http://localhost:3000/users/me
+Content-Type: application/json
+
+{
+    "name": "Petyas",
+    "about": "asdf"
+}
+
+###
+PATCH http://localhost:3000/users/me/avatar
+Content-Type: application/json
+
+{
+    "avatar": "https://asdfs.ru"
 }
