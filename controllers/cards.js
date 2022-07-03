@@ -5,7 +5,7 @@ exports.createCard = (req, res) => {
   const { name, link, owner } = req.body;
 
   card.create({ name, link, owner })
-    .then(card => res.status(200).send({ card }))
+    .then(card => res.send({ data: card }))
     .catch(err => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });

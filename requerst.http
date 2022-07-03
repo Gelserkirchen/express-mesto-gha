@@ -52,7 +52,7 @@ Content-Type: application/json
 PATCH http://localhost:3000/404
 
 ###
-DELETE http://localhost:3000/cards/62c02ed69a1429f150139b33
+DELETE http://localhost:3000/cards/62c1186f39c2a275770b06e8
 # DELETE http://localhost:3000/cards/62c
 
 ###
