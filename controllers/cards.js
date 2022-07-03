@@ -33,7 +33,11 @@ exports.deleteCardById = (req, res) => {
       res.status(200).send( { deletedCard });
     }
   }).catch(err => {
-    res.status(500).send({ message: err.message });
+    if (!ObjectId.isValid(cardId)) {
+      res.status(400).send({ message: 'Переданы некорректные данные для удаления карточки'}) }
+    else {
+      res.status(500).send({ message: err.message });
+    }
   })
 };
 
