@@ -1,4 +1,5 @@
 const card = require('../models/card');
+const { ObjectId } = require('mongoose').Types;
 
 exports.createCard = (req, res) => {
   const { name, link, owner } = req.body;
@@ -45,13 +46,13 @@ exports.likeCard = (req, res) => {
     cardId,
     { $addToSet: { likes: _id} },
     { new: true, runValidators: true })
-  .orFail(() => { throw new Error('ReferenceError'); })  
+  .orFail(() => { throw new Error('ReferenceError')  })  
   .then(cardData => res.status(200).send( { cardData }))
   .catch(err => {
-    if (err.name = 'ReferenceError') {
+    if (!ObjectId.isValid(cardId)) {
+      res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка'}) 
+    } else if (err.name = 'ReferenceError') {
       res.status(404).send({ message: 'Передан несуществующий _id карточки' })
-    } else if (err.name = 'CastError') {
-      res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка'  })
     } else {
       res.status(500).send({ message: err.message })
     }
@@ -69,12 +70,12 @@ exports.dislikeCard = (req, res) => {
     .orFail(() => { throw new Error('ReferenceError'); })  
     .then(cardData => { res.status(200).send( { cardData }) })
     .catch(err => {
-    if (err.name = 'ReferenceError') {
-      res.status(404).send({ message: 'Передан несуществующий _id карточки' })
-    } else if (err.name = 'CastError') {
-      res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка'  })
-    } else {
-      res.status(500).send({ message: err.message })
-    }
-  })
+      if (!ObjectId.isValid(cardId)) {
+        res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка'}) 
+      } else if (err.name = 'ReferenceError') {
+        res.status(404).send({ message: 'Передан несуществующий _id карточки' })
+      } else {
+        res.status(500).send({ message: err.message })
+      }
+    })
 }
