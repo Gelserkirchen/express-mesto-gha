@@ -27,7 +27,7 @@ exports.deleteCardById = (req, res) => {
 
   card.findByIdAndRemove(cardId).then((deletedCard) => {
     if (!deletedCard) {
-      res.status(404).send('Карточка с указанным _id не найдена.');
+      res.status(404).send( { message: 'Карточка с указанным _id не найдена.' } );
     } else {
       res.status(200).send(deletedCard);
     }
@@ -42,15 +42,17 @@ exports.likeCard = (req, res) => {
 
   if (!carId) {
     res.status(404).send({ message: 'Передан несуществующий _id карточки.' })
-  } 
+  }
 
   card.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   ).then(cardData => res.status(200).send( { cardData })).catch(err => {
-    if (err.name === 'CastError') {
-      res.status(400).send({ message: 'Передан несуществующий _id карточки.' })
+    if (err.name = 'NotFound') {
+      res.status(404).send({ message: 'Передан несуществующий _id карточки' })
+    } else if (err.name = 'CastError') {
+      res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка'  })
     } else {
       res.status(500).send({ message: err.message })
     }
@@ -65,6 +67,12 @@ exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   ).catch(err => {
-    res.status(500).send({ message: err.message })
+    if (err.name = 'NotFound') {
+      res.status(404).send({ message: 'Передан несуществующий _id карточки' })
+    } else if (err.name = 'CastError') {
+      res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка'  })
+    } else {
+      res.status(500).send({ message: err.message })
+    }
   })
 }
