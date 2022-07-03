@@ -21,7 +21,7 @@ app.use('/', userRouter);
 app.use('/', cardsRouter);
 
 app.use((err, res, req) => {
-  res.status(404).send('Карточка или пользователь на нейдены!');
+  res.status(404).send( { message: 'Карточка или пользователь на нейдены!'} );
 })
 
 async function main() {

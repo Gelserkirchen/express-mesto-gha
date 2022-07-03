@@ -67,9 +67,7 @@ exports.dislikeCard = (req, res) => {
     { $pull: { likes: _id } }, // убрать _id из массива
     { new: true, runValidators: true })
     .orFail(() => { throw new Error('ReferenceError'); })  
-    .then(cardData => { 
-      if (cardData) { res.status(200).send( { cardData }) }
-    })
+    .then(cardData => { res.status(200).send( { cardData }) })
     .catch(err => {
     if (err.name = 'ReferenceError') {
       res.status(404).send({ message: 'Передан несуществующий _id карточки' })
