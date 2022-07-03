@@ -45,13 +45,14 @@ exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true })
   .orFail(() => { throw new Error('ReferenceError'); })  
-  .then(cardData => { 
-    if (cardData) { res.status(200).send( { cardData }) }
-  })
+  .then(cardData => res.status(200).send( { cardData }))
   .catch(err => {
     if (err.name = 'ReferenceError') {
       res.status(404).send({ message: 'Передан несуществующий _id карточки' })
-    } else if (err.name = 'CastError') {
+      return
+    } 
+    
+    if (err.name = 'CastError') {
       res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка'  })
     } else {
       res.status(500).send({ message: err.message })
