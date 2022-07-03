@@ -2,10 +2,11 @@ const card = require('../models/card');
 const { ObjectId } = require('mongoose').Types;
 
 exports.createCard = (req, res) => {
-  const { name, link, owner } = req.body;
+  const owner = req.user._id;
+  const { name, link } = req.body;
 
   card.create({ name, link, owner })
-    .then(card => res.send({ data: card }))
+    .then(card => res.status(200).send({ data: card }))
     .catch(err => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });

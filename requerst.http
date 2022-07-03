@@ -27,8 +27,7 @@ Content-Type: application/json
 
 {
     "name": "asdf",
-    "link": "https://sdf",
-    "owner": "62bc16168bba5560cb65264f"
+    "link": "https://sdf"
 }
 
 ###
