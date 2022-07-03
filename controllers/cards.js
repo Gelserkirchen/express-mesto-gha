@@ -4,7 +4,7 @@ exports.createCard = (req, res) => {
   const { name, link, owner } = req.body;
 
   card.create({ name, link, owner })
-    .then(user => res.status(200).send({ user }))
+    .then(card => res.status(200).send({ card }))
     .catch(err => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
@@ -29,7 +29,7 @@ exports.deleteCardById = (req, res) => {
     if (!deletedCard) {
       res.status(404).send( { message: 'Карточка с указанным _id не найдена.' } );
     } else {
-      res.status(200).send(deletedCard);
+      res.status(200).send( { deletedCard });
     }
   }).catch(err => {
     res.status(500).send({ message: err.message });
@@ -39,20 +39,18 @@ exports.deleteCardById = (req, res) => {
 
 exports.likeCard = (req, res) => {
   const { cardId } = req.params;
+  const { _id } = req.user;
 
   card.findByIdAndUpdate(
     cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true })
+    { $addToSet: { likes: _id} },
+    { new: true, runValidators: true })
   .orFail(() => { throw new Error('ReferenceError'); })  
   .then(cardData => res.status(200).send( { cardData }))
   .catch(err => {
     if (err.name = 'ReferenceError') {
       res.status(404).send({ message: 'Передан несуществующий _id карточки' })
-      return
-    } 
-    
-    if (err.name = 'CastError') {
+    } else if (err.name = 'CastError') {
       res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка'  })
     } else {
       res.status(500).send({ message: err.message })
@@ -62,11 +60,12 @@ exports.likeCard = (req, res) => {
 
 exports.dislikeCard = (req, res) => {
   const { cardId } = req.params;
+  const { _id } = req.user;
 
   card.findByIdAndUpdate(
     cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true },)
+    { $pull: { likes: _id } }, // убрать _id из массива
+    { new: true, runValidators: true })
     .orFail(() => { throw new Error('ReferenceError'); })  
     .then(cardData => { 
       if (cardData) { res.status(200).send( { cardData }) }
