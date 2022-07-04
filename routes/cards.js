@@ -8,6 +8,6 @@ cardsRouter.get('/cards', getCards);
 cardsRouter.delete('/cards/:cardId', deleteCardById);
 
 cardsRouter.put('/cards/:cardId/likes', likeCard);
-cardsRouter.delete('/cards/:cardId/likes', dislikeCard)
+cardsRouter.delete('/cards/:cardId/likes', dislikeCard);
 
-module.exports = cardsRouter
+module.exports = cardsRouter;
