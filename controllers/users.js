@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const user = require('../models/user');
 const {
   OK, BAD_REQUEST, SERVER_ERROR, NOT_FOUND,
@@ -24,9 +25,13 @@ exports.getUsersById = (req, res) => {
 };
 
 exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  user.create({ name, about, avatar })
+  user.create({
+    name, about, avatar, email, password,
+  })
     .then((userData) => {
       res.send({ data: userData });
     })
@@ -78,5 +83,26 @@ exports.updateAvatar = (req, res) => {
       } else {
         res.status(SERVER_ERROR).send({ message: err.message });
       }
+    });
+};
+
+exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' },
+      );
+
+      res.send({ token });
+    })
+    .catch((err) => {
+      // ошибка аутентификации
+      res
+        .status(401)
+        .send({ message: err.message });
     });
 };
