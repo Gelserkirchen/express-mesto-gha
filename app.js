@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { NOT_FOUND } = require('./utils/constants');
+const auth = require('./middlewares/auth');
 const {
   createUser, login,
 } = require('./controllers/users');
@@ -21,8 +22,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', userRouter);
-app.use('/', cardsRouter);
+app.use('/', auth, userRouter);
+app.use('/', auth, cardsRouter);
 app.post('/signin', login);
 app.post('/signup', createUser);
 
