@@ -2,9 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const { NOT_FOUND } = require('./utils/constants');
+const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
 const {
   createUser, login,
@@ -13,10 +14,12 @@ const {
 const app = express();
 const { PORT = 3000 } = process.env;
 
-app.use(bodyParser.json());
+app.use(errors());
 
+app.use(bodyParser.json());
 app.use('/', auth, userRouter);
 app.use('/', auth, cardsRouter);
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -36,8 +39,8 @@ app.post('/signup', celebrate(
   },
 ), login);
 
-app.use((err, res) => {
-  res.status(NOT_FOUND).send({ message: 'Карточка или пользователь на нейдены!' });
+app.use('*', (err, res, next) => {
+  next(new NotFoundError('Карточка или пользователь на нейдены!'));
 });
 
 app.use((err, req, res) => {
