@@ -1,8 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
-const { errors } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const NotFoundError = require('./errors/NotFoundError');
@@ -13,8 +12,6 @@ const {
 
 const app = express();
 const { PORT = 3000 } = process.env;
-
-app.use(errors());
 
 app.use(bodyParser.json());
 app.use('/', auth, userRouter);
@@ -43,7 +40,9 @@ app.use('*', (err, res, next) => {
   next(new NotFoundError('Карточка или пользователь на нейдены!'));
 });
 
-app.use((err, req, res) => {
+app.use(errors());
+
+app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
 
   res
@@ -53,6 +52,7 @@ app.use((err, req, res) => {
         ? 'На сервере произошла ошибка'
         : message,
     });
+  next();
 });
 
 async function main() {
