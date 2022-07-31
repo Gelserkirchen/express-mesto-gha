@@ -22,7 +22,7 @@ app.post('/signin', celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
-}), createUser);
+}), login);
 
 app.post('/signup', celebrate(
   {
@@ -34,7 +34,7 @@ app.post('/signup', celebrate(
       password: Joi.string().min(2).min(2),
     }),
   },
-), login);
+), createUser);
 
 app.use('*', (err, res, next) => {
   next(new NotFoundError('Карточка или пользователь на нейдены!'));
