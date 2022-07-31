@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { celebrate, Joi } = require('celebrate');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { NOT_FOUND } = require('./utils/constants');
@@ -16,8 +17,23 @@ app.use(bodyParser.json());
 
 app.use('/', auth, userRouter);
 app.use('/', auth, cardsRouter);
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}));
+app.post('/signup', celebrate(
+  {
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().regex(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/),
+      email: Joi.string().min(2).email(),
+      password: Joi.string().min(2).min(2),
+    }
+  },
+));
 
 app.use((err, res) => {
   res.status(NOT_FOUND).send({ message: 'Карточка или пользователь на нейдены!' });
