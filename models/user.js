@@ -40,6 +40,7 @@ userSchema.path('avatar').validate((val) => {
   return urlRegex.test(val);
 }, 'Invalid URL.');
 
+// eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {

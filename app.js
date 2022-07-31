@@ -22,7 +22,8 @@ app.post('/signin', celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
-}));
+}), createUser);
+
 app.post('/signup', celebrate(
   {
     body: Joi.object().keys({
@@ -31,15 +32,15 @@ app.post('/signup', celebrate(
       avatar: Joi.string().regex(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/),
       email: Joi.string().min(2).email(),
       password: Joi.string().min(2).min(2),
-    }
+    }),
   },
-));
+), login);
 
 app.use((err, res) => {
   res.status(NOT_FOUND).send({ message: 'Карточка или пользователь на нейдены!' });
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const { statusCode = 500, message } = err;
 
   res
