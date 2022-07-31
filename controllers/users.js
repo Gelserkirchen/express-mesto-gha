@@ -14,6 +14,7 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getUsersById = (req, res, next) => {
+  // eslint-disable-next-line consistent-return
   user.findOne({ _id: req.params.userId }).then((userData) => {
     if (!userData) {
       return next(new NotFoundError('Пользователь по указанному _id не найден.'));
@@ -90,9 +91,9 @@ exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return user.findUserByCredentials(email, password)
-    .then((user) => {
+    .then((userData) => {
       const token = jwt.sign(
-        { _id: user._id },
+        { _id: userData._id },
         'some-secret-key',
         { expiresIn: '7d' },
       );
