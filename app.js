@@ -14,8 +14,8 @@ const app = express();
 const { PORT = 3000 } = process.env;
 
 app.use(bodyParser.json());
-app.use('/', auth, userRouter);
-app.use('/', auth, cardsRouter);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardsRouter);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -29,9 +29,9 @@ app.post('/signup', celebrate(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().regex(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/),
-      email: Joi.string().min(2).email(),
-      password: Joi.string().min(2).min(2),
+      avatar: Joi.string().uri({ scheme: ['http', 'https'] }),
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(4),
     }),
   },
 ), createUser);
