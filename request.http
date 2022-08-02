@@ -35,15 +35,14 @@ Content-Type: application/json
     "about": "positive dreamer",
     "avatar": "https://sdf"
 }
-###
-GET http://localhost:3000/cards 
+
 ###
 POST http://localhost:3000/cards
 Content-Type: application/json
 {
-    "name": "asdf",
-    "link": "https://sdf",
-    "owner": "62bc16168bba5560cb65264f"
+    "name": "DeleteThisPlease",
+    "link": "https://www.sdf.ru",
+    "owner": "62bc16168bba5560cb65264f",
 }
 ###
 PATCH http://localhost:3000/users/me
@@ -60,6 +59,12 @@ Content-Type: application/json
 }
 ###
 PATCH http://localhost:3000/404
+
+###
+GET http://localhost:3000/cards
+###
+DELETE http://localhost:3000/cards/62e93d64615de9bdd457bcf4
+
 ###
 DELETE http://localhost:3000/cards/62c02ed69a1429f150139b36
 
