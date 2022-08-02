@@ -60,7 +60,11 @@ exports.likeCard = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail(() => { throw new Error('ReferenceError'); })
-    .then((cardData) => res.status(200).send({ cardData }))
+    // eslint-disable-next-line consistent-return
+    .then((cardData) => {
+      if (!cardData) { return next(new NotFoundError('Передан несуществующий _id карточки')); }
+      res.status(200).send({ cardData });
+    })
     .catch((err) => {
       if (!ObjectId.isValid(cardId)) {
         next(new BadRequestError('Переданы некорректные данные для постановки лайка'));
@@ -82,7 +86,11 @@ exports.dislikeCard = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail(() => { throw new Error('ReferenceError'); })
-    .then((cardData) => { res.status(OK).send({ cardData }); })
+    // eslint-disable-next-line consistent-return
+    .then((cardData) => {
+      if (!cardData) { return next(new NotFoundError('Передан несуществующий _id карточки')); }
+      res.status(OK).send({ cardData });
+    })
     .catch((err) => {
       if (!ObjectId.isValid(cardId)) {
         next(new BadRequestError('Переданы некорректные данные для постановки лайка'));
