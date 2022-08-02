@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
@@ -14,6 +15,7 @@ const app = express();
 const { PORT = 3000 } = process.env;
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use('/users', auth, userRouter);
 app.use('/cards', auth, cardsRouter);
 

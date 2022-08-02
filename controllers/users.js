@@ -61,7 +61,7 @@ exports.createUser = (req, res, next) => {
         about: userData.about,
         avatar: userData.avatar,
         email: userData.email,
-        id: userData._id,
+        // id: userData._id,
       });
     })
     .catch((err) => {
@@ -129,12 +129,10 @@ exports.login = (req, res, next) => {
       );
 
       res.cookie('jwt', token, {
-        maxAge: 3600000,
+        maxAge: 3600000 * 161,
         httpOnly: true,
         sameSite: true,
-      });
-
-      res.send({ message: 'Вы авторизовались' });
+      }).send({ message: 'Вы авторизовались' });
     })
     .catch(() => {
       next(new UnauthorizedError('Некорректные почта или пароль'));

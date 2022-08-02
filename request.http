@@ -11,16 +11,19 @@ POST http://localhost:3000/signup
 content-type: application/json
 
 {
-    "email": "kukush779@mail.ru",
+    "email": "kukush5@mail.ru",
     "password": "SoBaKa77$"
 }
+
+###
+GET http://localhost:3000/users/me
 
 ###
 POST http://localhost:3000/signin 
 Content-Type: application/json
 
 {
-    "email": "kukush779@mail.ru",
+    "email": "kukush5@mail.ru",
     "password": "SoBaKa77$"
 }
 
