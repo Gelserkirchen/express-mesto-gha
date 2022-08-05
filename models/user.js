@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-require('mongoose-type-url');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const urlRegex = require('../utils/urlRegex');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -35,10 +35,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.path('avatar').validate((val) => {
-  const urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
-  return urlRegex.test(val);
-}, 'Invalid URL.');
+userSchema.path('avatar').validate((val) => urlRegex.test(val), 'Invalid URL.');
 
 // eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function (email, password) {

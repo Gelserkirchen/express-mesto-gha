@@ -1,6 +1,7 @@
 const cardsRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const express = require('express');
+const urlRegex = require('../utils/urlRegex');
 const {
   createCard, getCards, deleteCardById, likeCard, dislikeCard,
 } = require('../controllers/cards');
@@ -8,7 +9,7 @@ const {
 cardsRouter.post('/', express.json(), celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().uri({ scheme: ['http', 'https'] }),
+    link: Joi.string().required().regex(urlRegex),
   }),
 }), createCard);
 
