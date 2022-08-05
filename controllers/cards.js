@@ -17,7 +17,7 @@ exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании карточки.'));
       } else {
-        res.status(SERVER_ERROR).send({ message: err.message });
+        next();
       }
     });
 };
@@ -26,7 +26,7 @@ exports.getCards = (req, res) => {
   card.find({}).then((cards) => {
     res.status(OK).send(cards);
   }).catch((err) => {
-    res.status(SERVER_ERROR).send({ message: err.message });
+    next();
   });
 };
 
@@ -49,7 +49,7 @@ exports.deleteCardById = (req, res, next) => {
     if (!ObjectId.isValid(cardId)) {
       next(new BadRequestError('Переданы некорректные данные для удаления карточки'));
     } else {
-      res.status(SERVER_ERROR).send({ message: err.message });
+      next();
     }
   });
 };
@@ -75,7 +75,7 @@ exports.likeCard = (req, res, next) => {
       } else if (err.name === 'ReferenceError') {
         next(new NotFoundError('Передан несуществующий _id карточки'));
       } else {
-        res.status(SERVER_ERROR).send({ message: err.message });
+        next();
       }
     });
 };
@@ -103,7 +103,7 @@ exports.dislikeCard = (req, res, next) => {
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Передан несуществующий _id карточки'));
       } else {
-        res.status(SERVER_ERROR).send({ message: err.message });
+        next();
       }
     });
 };
