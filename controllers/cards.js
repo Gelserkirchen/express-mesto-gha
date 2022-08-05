@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongoose').Types;
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const ConflictError = require('../errors/ConflictError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const card = require('../models/card');
 const {
   OK, SERVER_ERROR,
@@ -37,7 +37,7 @@ exports.deleteCardById = (req, res, next) => {
     if (!deletedCard) {
       next(new NotFoundError('Карточка с указанным _id не найдена.'));
     } else if (deletedCard.owner.toString() !== req.user._id) {
-      next(new ConflictError('У вас нет прав удалять карточку.'));
+      next(new ForbiddenError('У вас нет прав удалять карточку.'));
     } else {
       card.findByIdAndRemove(cardId).then(
         () => {
@@ -63,7 +63,7 @@ exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: _id } },
     { new: true, runValidators: true },
   )
-    .orFail(() => { throw new Error('ReferenceError'); })
+    .orFail(() => { next(new NotFoundError('Передан несуществующий _id карточки')); })
     // eslint-disable-next-line consistent-return
     .then((cardData) => {
       if (!cardData) { return next(new NotFoundError('Передан несуществующий _id карточки')); }
@@ -89,7 +89,7 @@ exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: _id } },
     { new: true, runValidators: true },
   )
-    .orFail(() => { throw new Error('ReferenceError'); })
+    .orFail(() => { next(new NotFoundError('Передан несуществующий _id карточки')); })
     // eslint-disable-next-line consistent-return
     .then((cardData) => {
       if (!cardData) { return next(new NotFoundError('Передан несуществующий _id карточки')); }
