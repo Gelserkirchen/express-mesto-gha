@@ -5,7 +5,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const user = require('../models/user');
 const {
-  OK, SERVER_ERROR,
+  OK,
 } = require('../utils/constants');
 const ConflictError = require('../errors/ConflictError');
 
@@ -52,25 +52,31 @@ exports.createUser = (req, res, next) => {
     name, about, avatar, email,
   } = req.body;
 
-  bcrypt.hash(req.body.password, 10).then((hash) => user.create({
-    name, about, avatar, email, password: hash,
-  }))
+  return user.findOne({ email }).then((userData) => {
+    if (userData) {
+      throw new ConflictError('Такой email уже используется');
+    }
+    return bcrypt.hash(req.body.password, 10);
+  })
+
+    .then((hash) => user.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((userData) => {
       res.send({
         name: userData.name,
         about: userData.about,
         avatar: userData.avatar,
         email: userData.email,
-        // id: userData._id,
       });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
-      } else if (err.code === 11000) {
+      } else if (err.statusCode === 409) {
         next(new ConflictError('Такой email уже используется'));
       } else {
-        res.status(SERVER_ERROR).send({ message: err.message });
+        next();
       }
     });
 };
@@ -91,7 +97,7 @@ exports.updateProfile = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
       } else {
-        res.status(SERVER_ERROR).send({ message: err.message });
+        next();
       }
     });
 };
@@ -112,7 +118,7 @@ exports.updateAvatar = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
       } else {
-        res.status(SERVER_ERROR).send({ message: err.message });
+        next();
       }
     });
 };

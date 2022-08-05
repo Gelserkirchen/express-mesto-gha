@@ -4,7 +4,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const card = require('../models/card');
 const {
-  OK, SERVER_ERROR,
+  OK,
 } = require('../utils/constants');
 
 exports.createCard = (req, res, next) => {
@@ -22,10 +22,10 @@ exports.createCard = (req, res, next) => {
     });
 };
 
-exports.getCards = (req, res) => {
+exports.getCards = (req, res, next) => {
   card.find({}).then((cards) => {
     res.status(OK).send(cards);
-  }).catch((err) => {
+  }).catch(() => {
     next();
   });
 };
@@ -45,7 +45,7 @@ exports.deleteCardById = (req, res, next) => {
         },
       );
     }
-  }).catch((err) => {
+  }).catch(() => {
     if (!ObjectId.isValid(cardId)) {
       next(new BadRequestError('Переданы некорректные данные для удаления карточки'));
     } else {
@@ -63,10 +63,9 @@ exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: _id } },
     { new: true, runValidators: true },
   )
-    .orFail(() => { next(new NotFoundError('Передан несуществующий _id карточки')); })
+    .orFail(() => { throw new NotFoundError('Передан несуществующий _id карточки'); })
     // eslint-disable-next-line consistent-return
     .then((cardData) => {
-      if (!cardData) { return next(new NotFoundError('Передан несуществующий _id карточки')); }
       res.status(200).send({ cardData });
     })
     .catch((err) => {
@@ -90,11 +89,10 @@ exports.dislikeCard = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail(() => {
-      next(new NotFoundError('Передан несуществующий _id карточки'));
+      throw new NotFoundError('Передан несуществующий _id карточки');
     })
     // eslint-disable-next-line consistent-return
     .then((cardData) => {
-      if (!cardData) { return next(new NotFoundError('Передан несуществующий _id карточки')); }
       res.status(OK).send({ cardData });
     })
     .catch((err) => {
