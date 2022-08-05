@@ -89,7 +89,9 @@ exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: _id } },
     { new: true, runValidators: true },
   )
-    .orFail(() => { next(new NotFoundError('Передан несуществующий _id карточки')); })
+    .orFail(() => {
+      next(new NotFoundError('Передан несуществующий _id карточки'));
+    })
     // eslint-disable-next-line consistent-return
     .then((cardData) => {
       if (!cardData) { return next(new NotFoundError('Передан несуществующий _id карточки')); }
@@ -98,7 +100,7 @@ exports.dislikeCard = (req, res, next) => {
     .catch((err) => {
       if (!ObjectId.isValid(cardId)) {
         next(new BadRequestError('Переданы некорректные данные для постановки лайка'));
-      } else if (err.name === 'ReferenceError') {
+      } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Передан несуществующий _id карточки'));
       } else {
         res.status(SERVER_ERROR).send({ message: err.message });
