@@ -76,7 +76,7 @@ exports.createUser = (req, res, next) => {
       } else if (err.statusCode === 409) {
         next(new ConflictError('Такой email уже используется'));
       } else {
-        next();
+        next(err);
       }
     });
 };
@@ -97,7 +97,7 @@ exports.updateProfile = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
       } else {
-        next();
+        next(err);
       }
     });
 };
@@ -118,7 +118,7 @@ exports.updateAvatar = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
       } else {
-        next();
+        next(err);
       }
     });
 };

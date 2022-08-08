@@ -17,7 +17,7 @@ exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании карточки.'));
       } else {
-        next();
+        next(err);
       }
     });
 };
@@ -25,8 +25,8 @@ exports.createCard = (req, res, next) => {
 exports.getCards = (req, res, next) => {
   card.find({}).then((cards) => {
     res.status(OK).send(cards);
-  }).catch(() => {
-    next();
+  }).catch((err) => {
+    next(err);
   });
 };
 
@@ -40,16 +40,16 @@ exports.deleteCardById = (req, res, next) => {
       next(new ForbiddenError('У вас нет прав удалять карточку.'));
     } else {
       card.findByIdAndRemove(cardId).then(
-        () => {
-          res.status(OK).send({ deletedCard });
+        (cardData) => {
+          res.status(OK).send({ cardData });
         },
       );
     }
-  }).catch(() => {
+  }).catch((err) => {
     if (!ObjectId.isValid(cardId)) {
       next(new BadRequestError('Переданы некорректные данные для удаления карточки'));
     } else {
-      next();
+      next(err);
     }
   });
 };
@@ -74,7 +74,7 @@ exports.likeCard = (req, res, next) => {
       } else if (err.name === 'ReferenceError') {
         next(new NotFoundError('Передан несуществующий _id карточки'));
       } else {
-        next();
+        next(err);
       }
     });
 };
@@ -101,7 +101,7 @@ exports.dislikeCard = (req, res, next) => {
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Передан несуществующий _id карточки'));
       } else {
-        next();
+        next(err);
       }
     });
 };
